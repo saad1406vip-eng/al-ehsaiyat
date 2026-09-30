@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق الإحصائيات - قسم المختبر</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<!-- الترويسة -->
+<header class="header">
+  <div class="header-text">
+    <h1>📊 تطبيق الإحصائيات</h1>
+    <p>مستشفى سبت العلايا العام - قسم المختبر</p>
+  </div>
+</header>
+
+<!-- التبويبات -->
+<nav class="tabs">
+  <button class="tab active" data-tab="home">🏠 الرئيسية</button>
+  <button class="tab" data-tab="aseer">📋 إحصائية عسير</button>
+  <button class="tab" data-tab="blood-bank">🩸 بنك الدم</button>
+  <button class="tab" data-tab="lab">🧪 إحصائية مخبرية</button>
+  <button class="tab" data-tab="training">🎓 التدريب</button>
+  <button class="tab" data-tab="meetings">📝 المحاضر</button>
+  <button class="tab" data-tab="staff">👥 الفريق</button>
+  <button class="tab" data-tab="settings">⚙️ الإعدادات</button>
+</nav>
+
+<main class="container">
+
+  <!-- ===== الرئيسية ===== -->
+  <section id="home" class="tab-content active">
+    <div class="card">
+      <h2>🏠 لوحة المعلومات</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-number" id="stat-staff">18</span>
+          <span class="stat-label">موظف</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="stat-models">5</span>
+          <span class="stat-label">نموذج</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="stat-meetings">0</span>
+          <span class="stat-label">محضر</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="stat-training">0</span>
+          <span class="stat-label">برنامج تدريبي</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📤 رفع ملفات فيدا (Excel/CSV)</h2>
+      <p style="color:#64748b;margin-bottom:10px;">ارفع ملف فيدا لاستخراج البيانات تلقائياً</p>
+      <input type="file" id="vidaFile" accept=".xlsx,.xls,.csv">
+      <div id="vidaFileResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>📅 اختيار الفترة الزمنية</h2>
+      <div class="date-range">
+        <label>من: <input type="date" id="dateFrom"></label>
+        <label>إلى: <input type="date" id="dateTo"></label>
+        <button onclick="applyDateRange()" class="btn-primary">تطبيق</button>
+      </div>
+      <div id="dateResult"></div>
+    </div>
+  </section>
+
+  <!-- ===== إحصائية عسير ===== -->
+  <section id="aseer" class="tab-content">
+    <div class="card">
+      <h2>📋 إحصائية عسير الشهرية</h2>
+      
+      <div class="step-section">
+        <h3>📤 1. رفع ملف عسير الرسمي</h3>
+        <input type="file" id="aseerFile" accept=".xlsx,.xls">
+        <div id="aseerFileResult"></div>
+      </div>
+
+      <div class="step-section">
+        <h3>📤 2. رفع ملف فيدا (CSV/Excel)</h3>
+        <input type="file" id="vidaFile2" accept=".xlsx,.xls,.csv">
+        <div id="vidaFile2Result"></div>
+      </div>
+
+      <div class="step-section">
+        <h3>📅 3. الشهر الجديد</h3>
+        <select id="aseerMonth">
+          <option value="1">يناير</option>
+          <option value="2">فبراير</option>
+          <option value="3">مارس</option>
+          <option value="4">أبريل</option>
+          <option value="5">مايو</option>
+          <option value="6">يونيو</option>
+          <option value="7">يوليو</option>
+          <option value="8">أغسطس</option>
+          <option value="9">سبتمبر</option>
+          <option value="10">أكتوبر</option>
+          <option value="11">نوفمبر</option>
+          <option value="12">ديسمبر</option>
+        </select>
+        <input type="number" id="aseerYear" value="2026" style="width:100px;">
+      </div>
+
+      <div class="step-section">
+        <h3>🏥 4. العيادات اليدوية (غير موجودة في فيدا)</h3>
+        <table class="input-table">
+          <thead>
+            <tr>
+              <th>العيادة</th>
+              <th>المراجعين/يوم</th>
+              <th>الفحوصات/مراجع</th>
+              <th>الإجمالي/شهر</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>عيادة الصحة العامة</td>
+              <td><input type="number" id="ph-visitors" value="20"></td>
+              <td><input type="number" id="ph-tests" value="6"></td>
+              <td><span id="ph-total">3,600</span></td>
+            </tr>
+            <tr>
+              <td>عيادة فحص الزواج</td>
+              <td><input type="number" id="marriage-visitors" value="20"></td>
+              <td><input type="number" id="marriage-tests" value="6"></td>
+              <td><span id="marriage-total">3,600</span></td>
+            </tr>
+            <tr style="background:#f0f4f8;font-weight:bold;">
+              <td colspan="3">الإجمالي اليدوي</td>
+              <td><span id="manual-grand-total">7,200</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <button onclick="calculateManual()" class="btn-secondary">🔄 حساب</button>
+      </div>
+
+      <div class="step-section">
+        <h3>📊 5. معاينة</h3>
+        <div id="previewResult"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateAseerModel()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="saveAseerExcel()" class="btn-secondary">💾 حفظ Excel</button>
+        <button onclick="exportToPDF('aseer-result')" class="btn-secondary">📄 PDF</button>
+      </div>
+
+      <div id="aseer-result"></div>
+    </div>
+  </section>
+
+  <!-- ===== بنك الدم ===== -->
+  <section id="blood-bank" class="tab-content">
+    <div class="card">
+      <h2>🩸 إحصائية بنك الدم (GDN-15-1)</h2>
+      
+      <div class="input-mode">
+        <label>
+          <input type="radio" name="bb-mode" value="manual" checked onchange="toggleBBMode()">
+          ✍️ إدخال يدوي
+        </label>
+        <label>
+          <input type="radio" name="bb-mode" value="auto" onchange="toggleBBMode()">
+          🤖 تلقائي من فيدا
+        </label>
+      </div>
+
+      <div id="bb-manual" class="input-section">
+        <h3>الجزء 1: المتبرعون</h3>
+        <table class="input-table">
+          <tr><td>إجمالي عدد المتبرعين</td><td><input type="number" id="bb-donors-total"></td></tr>
+          <tr><td>سعودي</td><td><input type="number" id="bb-donors-saudi"></td></tr>
+          <tr><td>غير سعودي</td><td><input type="number" id="bb-donors-nsaudi"></td></tr>
+          <tr><td>تبرع لأول مرة</td><td><input type="number" id="bb-first-time"></td></tr>
+          <tr><td>تبرع أكثر من مرة</td><td><input type="number" id="bb-more-than-one"></td></tr>
+        </table>
+
+        <h3>الجزء 2: تفاصيل الفحوص والوحدات</h3>
+        <table class="input-table">
+          <tr><td>وحدات مجمعة في نفس البنك</td><td><input type="number" id="bb-collected-same"></td></tr>
+          <tr><td>وحدات مجمعة من بنوك أخرى</td><td><input type="number" id="bb-collected-other"></td></tr>
+          <tr><td>وحدات مرسلة لبنوك أخرى</td><td><input type="number" id="bb-sent-other"></td></tr>
+          <tr><td>إجمالي عدد الوحدات</td><td><input type="number" id="bb-total-units"></td></tr>
+        </table>
+
+        <h3>الجزء 3: مشتقات الدم المحضرة</h3>
+        <table class="input-table">
+          <tr><td>Packed RBC</td><td><input type="number" id="bb-packed-rbc"></td></tr>
+          <tr><td>FFP</td><td><input type="number" id="bb-ffp"></td></tr>
+          <tr><td>Cryo.ppt</td><td><input type="number" id="bb-cryo"></td></tr>
+          <tr><td>PC</td><td><input type="number" id="bb-pc"></td></tr>
+        </table>
+
+        <h3>الجزء 4: الوحدات المصروفة</h3>
+        <table class="input-table">
+          <tr><td>Whole Blood</td><td><input type="number" id="bb-whole"></td></tr>
+          <tr><td>Packed RBC</td><td><input type="number" id="bb-disp-packed"></td></tr>
+          <tr><td>Conc. Platelets</td><td><input type="number" id="bb-disp-platelets"></td></tr>
+          <tr><td>FFP</td><td><input type="number" id="bb-disp-ffp"></td></tr>
+          <tr><td>Cryoprecipitate</td><td><input type="number" id="bb-disp-cryo"></td></tr>
+          <tr><td>PRBCs Leukocyte Filtered</td><td><input type="number" id="bb-disp-prbc"></td></tr>
+          <tr><td>Platelets Conc. Leukocyte Filtered</td><td><input type="number" id="bb-disp-plt"></td></tr>
+          <tr><td>Irradiated PRBCs</td><td><input type="number" id="bb-disp-irr-prbc"></td></tr>
+          <tr><td>Irradiated Platelets</td><td><input type="number" id="bb-disp-irr-plt"></td></tr>
+          <tr><td>Others</td><td><input type="number" id="bb-disp-others"></td></tr>
+        </table>
+
+        <h3>الجزء 5: فحوص الدم</h3>
+        <table class="input-table">
+          <tr><td>Cross Matching - Matched</td><td><input type="number" id="bb-cm-matched"></td></tr>
+          <tr><td>Cross Matching - Mismatched</td><td><input type="number" id="bb-cm-mismatched"></td></tr>
+          <tr><td>Blood Grouping & Rh Factor</td><td><input type="number" id="bb-bg"></td></tr>
+          <tr><td>Antibody Screening</td><td><input type="number" id="bb-as"></td></tr>
+          <tr><td>Antibody Identification</td><td><input type="number" id="bb-ai"></td></tr>
+          <tr><td>Hepatitis B</td><td><input type="number" id="bb-hbv"></td></tr>
+          <tr><td>Hepatitis C</td><td><input type="number" id="bb-hcv"></td></tr>
+          <tr><td>HIV</td><td><input type="number" id="bb-hiv"></td></tr>
+          <tr><td>HTLV</td><td><input type="number" id="bb-htlv"></td></tr>
+          <tr><td>CMV</td><td><input type="number" id="bb-cmv"></td></tr>
+          <tr><td>Other STD</td><td><input type="number" id="bb-std"></td></tr>
+          <tr><td>Malaria & Other Parasites</td><td><input type="number" id="bb-malaria"></td></tr>
+        </table>
+      </div>
+
+      <div id="bb-auto" class="input-section" style="display:none;">
+        <p style="color:#64748b;text-align:center;padding:40px;">
+          📤 ارفع ملف فيدا (Excel) من الصفحة الرئيسية<br>
+          وسيتم استخراج بيانات بنك الدم تلقائياً
+        </p>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateBloodBank()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="exportToExcel('blood-bank')" class="btn-secondary">📥 Excel</button>
+        <button onclick="exportToPDF('bb-result')" class="btn-secondary">📄 PDF</button>
+        <button onclick="printModel('bb')" class="btn-secondary">🖨️ طباعة</button>
+      </div>
+
+      <div id="bb-result"></div>
+    </div>
+  </section>
+
+  <!-- ===== إحصائية مخبرية ===== -->
+  <section id="lab" class="tab-content">
+    <div class="card">
+      <h2>🧪 إحصائية المختبر اليومية (31 يوم)</h2>
+      
+      <div class="input-mode">
+        <label>
+          <input type="radio" name="lab-mode" value="manual" checked onchange="toggleLabMode()">
+          ✍️ إدخال يدوي
+        </label>
+        <label>
+          <input type="radio" name="lab-mode" value="auto" onchange="toggleLabMode()">
+          🤖 تلقائي من فيدا
+        </label>
+      </div>
+
+      <div id="lab-manual" class="input-section">
+        <div class="date-range">
+          <label>التاريخ: <input type="date" id="lab-date"></label>
+          <button onclick="addLabDay()" class="btn-primary">➕ إضافة يوم</button>
+        </div>
+        <div id="lab-days-list"></div>
+      </div>
+
+      <div id="lab-auto" class="input-section" style="display:none;">
+        <p style="color:#64748b;text-align:center;padding:40px;">
+          📤 ارفع ملف فيدا (Excel) من الصفحة الرئيسية<br>
+          وسيتم استخراج البيانات تلقائياً
+        </p>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateLab()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="exportToExcel('lab')" class="btn-secondary">📥 Excel</button>
+        <button onclick="exportToPDF('lab-result')" class="btn-secondary">📄 PDF</button>
+        <button onclick="printModel('lab')" class="btn-secondary">🖨️ طباعة</button>
+      </div>
+
+      <div id="lab-result"></div>
+    </div>
+  </section>
+
+  <!-- ===== التدريب ===== -->
+  <section id="training" class="tab-content">
+    <div class="card">
+      <h2>🎓 مؤشر التدريب</h2>
+      
+      <div class="training-controls">
+        <label>الشهر: <input type="month" id="training-month"></label>
+        <label>الأسبوع: 
+          <select id="training-week">
+            <option value="1">الأسبوع الأول</option>
+            <option value="2">الأسبوع الثاني</option>
+            <option value="3">الأسبوع الثالث</option>
+            <option value="4">الأسبوع الرابع</option>
+          </select>
+        </label>
+        <button onclick="generateTraining()" class="btn-primary">🔄 توليد</button>
+      </div>
+
+      <div id="training-result"></div>
+    </div>
+  </section>
+
+  <!-- ===== المحاضر ===== -->
+  <section id="meetings" class="tab-content">
+    <div class="card">
+      <h2>📝 توليد محضر اجتماع</h2>
+      <button onclick="generateMeeting()" class="btn-primary">🔄 توليد محضر جديد</button>
+      <div id="meetingResult"></div>
+    </div>
+  </section>
+
+  <!-- ===== الفريق ===== -->
+  <section id="staff" class="tab-content">
+    <div class="card">
+      <h2>👥 فريق العمل (18 موظف)</h2>
+      <table class="staff-table">
+        <thead>
+          <tr><th>#</th><th>الاسم</th><th>المسمى</th></tr>
+        </thead>
+        <tbody id="staffTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== الإعدادات ===== -->
+  <section id="settings" class="tab-content">
+    <div class="card">
+      <h2>⚙️ الإعدادات</h2>
+      <div class="settings-grid">
+        <label>نسبة السعوديين: <input type="number" id="saudiRatio" value="70">%</label>
+        <label>نسبة الإناث: <input type="number" id="femaleRatio" value="60">%</label>
+        <label>نسبة الطوارئ: <input type="number" id="edRatio" value="40">%</label>
+        <label>نسبة العيادات: <input type="number" id="opdRatio" value="40">%</label>
+        <label>نسبة التنويم: <input type="number" id="inpRatio" value="20">%</label>
+        <label>نسبة التباين المسموحة: <input type="number" id="variance" value="10">%</label>
+      </div>
+      <button onclick="saveSettings()" class="btn-primary">💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="models.js"></script>
+<script src="training.js"></script>
+<script src="meetings.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
