@@ -1,0 +1,307 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+body { background: #f4f6f9; color: #1a2b4a; }
+
+/* الترويسة */
+.header {
+  background: #1a3a6b;
+  color: white;
+  padding: 20px 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.header-text h1 { font-size: 28px; margin-bottom: 4px; }
+.header-text p { font-size: 14px; opacity: 0.85; }
+
+/* التبويبات */
+.tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e0e6ed;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+.tab {
+  padding: 14px 22px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab:hover { color: #1a3a6b; background: #f8fafc; }
+.tab.active { color: #1a3a6b; border-bottom-color: #1a3a6b; }
+
+/* المحتوى */
+.container { max-width: 1200px; margin: 24px auto; padding: 0 20px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* البطاقات */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.card h2 { color: #1a3a6b; margin-bottom: 18px; font-size: 20px; }
+
+/* الإحصائيات */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+.stat-box {
+  background: linear-gradient(135deg, #1a3a6b, #2d5a9e);
+  color: white;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+}
+.stat-number { display: block; font-size: 36px; font-weight: bold; }
+.stat-label { display: block; font-size: 14px; opacity: 0.9; margin-top: 4px; }
+
+/* النماذج */
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.model-card {
+  background: #f8fafc;
+  border: 2px solid #e0e6ed;
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.model-card:hover {
+  background: #eef2f7;
+  border-color: #1a3a6b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26,58,107,0.15);
+}
+.model-card h3 { color: #1a3a6b; margin-bottom: 6px; font-size: 16px; }
+.model-card p { color: #64748b; font-size: 13px; }
+
+/* الأزرار */
+.btn-primary {
+  background: #1a3a6b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: #2d5a9e; transform: translateY(-1px); }
+
+/* الجداول */
+.staff-table { width: 100%; border-collapse: collapse; }
+.staff-table th {
+  background: #1a3a6b;
+  color: white;
+  padding: 12px;
+  text-align: right;
+}
+.staff-table td { padding: 10px 12px; border-bottom: 1px solid #e0e6ed; }
+.staff-table tr:hover { background: #f8fafc; }
+
+/* الإعدادات */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.settings-grid label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.settings-grid input {
+  padding: 8px 12px;
+  border: 2px solid #e0e6ed;
+  border-radius: 6px;
+  width: 80px;
+  font-size: 15px;
+}
+
+/* ===== تنسيقات المحضر ومؤشر التدريب ===== */
+.meeting-paper {
+  background: white;
+  padding: 30px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+}
+
+/* الترويسة */
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #1a3a6b;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.meeting-header-text h3 {
+  color: #1a3a6b;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.meeting-header-text h4 {
+  color: #333;
+  font-size: 15px;
+  font-weight: normal;
+}
+.meeting-logo {
+  width: 150px;
+  height: auto;
+}
+
+/* العنوان الرئيسي */
+.meeting-title {
+  text-align: center;
+  color: #1a3a6b;
+  font-size: 22px;
+  margin: 20px 0;
+  padding: 10px;
+  background: #f0f4f8;
+  border-radius: 6px;
+}
+
+/* الجدول العلوي */
+.meeting-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 2px solid #1a3a6b;
+  page-break-inside: avoid;
+}
+.meeting-info-table td {
+  padding: 12px 15px;
+  border: 1px solid #1a3a6b;
+  font-size: 14px;
+}
+.meeting-info-table .label {
+  background: #1a3a6b;
+  color: white;
+  font-weight: bold;
+  width: 25%;
+  text-align: center;
+}
+
+/* عناوين الأقسام */
+.meeting-section-title {
+  color: #1a3a6b;
+  font-size: 18px;
+  margin: 20px 0 10px;
+  padding-right: 10px;
+  border-right: 4px solid #1a3a6b;
+}
+
+/* أجندة الاجتماع */
+.meeting-agenda {
+  padding-right: 25px;
+  margin-bottom: 20px;
+}
+.meeting-agenda li {
+  padding: 6px 0;
+  font-size: 15px;
+}
+
+/* التوصيات */
+.meeting-recommendations {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 2px solid #1a3a6b;
+  page-break-inside: avoid;
+}
+.meeting-recommendations th {
+  background: #1a3a6b;
+  color: white;
+  padding: 10px;
+  text-align: right;
+}
+.meeting-recommendations td {
+  padding: 10px 15px;
+  border: 1px solid #1a3a6b;
+}
+
+/* جدول التوقيعات */
+.meeting-signatures {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 2px solid #1a3a6b;
+  page-break-inside: avoid;
+}
+.meeting-signatures th {
+  background: #1a3a6b;
+  color: white;
+  padding: 12px 10px;
+  text-align: right;
+  font-size: 14px;
+}
+.meeting-signatures td {
+  padding: 12px 10px;
+  border: 1px solid #1a3a6b;
+  height: 45px;
+  font-size: 14px;
+}
+.meeting-signatures .signature-cell {
+  width: 30%;
+  background: #fafafa;
+}
+
+/* توقيع رئيس القسم */
+.head-signature {
+  margin-top: 30px;
+  padding: 20px;
+  border: 2px solid #1a3a6b;
+  border-radius: 8px;
+  text-align: center;
+  background: #f8fafc;
+}
+.head-signature p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #1a3a6b;
+}
+.head-signature strong {
+  font-size: 18px;
+  color: #1a3a6b;
+}
+
+/* ===== الطباعة ===== */
+@media print {
+  body * { visibility: hidden; }
+  .meeting-paper, .meeting-paper * { visibility: visible; }
+  .meeting-paper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    font-size: 12px;
+  }
+  .meeting-logo { width: 180px; }
+  .btn-primary { display: none; }
+  .meeting-title { font-size: 18px; }
+  .meeting-section-title { font-size: 15px; }
+  .meeting-agenda li { font-size: 13px; }
+  .meeting-signatures td { height: 35px; padding: 8px; }
+  @page { size: A4; margin: 1.5cm; }
+}
