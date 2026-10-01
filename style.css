@@ -1,0 +1,348 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+body { background: #f4f6f9; color: #1a2b4a; }
+
+/* ===== الترويسة ===== */
+.header {
+  background: #1a3a6b;
+  color: white;
+  padding: 20px 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.header-text h1 { font-size: 28px; margin-bottom: 4px; }
+.header-text p { font-size: 14px; opacity: 0.85; }
+
+/* ===== التبويبات ===== */
+.tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e0e6ed;
+  padding: 0 20px;
+  overflow-x: auto;
+}
+.tab {
+  padding: 14px 22px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab:hover { color: #1a3a6b; background: #f8fafc; }
+.tab.active { color: #1a3a6b; border-bottom-color: #1a3a6b; }
+
+/* ===== المحتوى ===== */
+.container { max-width: 1200px; margin: 24px auto; padding: 0 20px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ===== البطاقات ===== */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.card h2 { color: #1a3a6b; margin-bottom: 18px; font-size: 20px; }
+.card h3 { color: #1a3a6b; margin: 18px 0 10px; font-size: 16px; border-right: 4px solid #1a3a6b; padding-right: 10px; }
+
+/* ===== الإحصائيات ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+.stat-box {
+  background: linear-gradient(135deg, #1a3a6b, #2d5a9e);
+  color: white;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+}
+.stat-number { display: block; font-size: 36px; font-weight: bold; }
+.stat-label { display: block; font-size: 14px; opacity: 0.9; margin-top: 4px; }
+
+/* ===== الأزرار ===== */
+.btn-primary {
+  background: #1a3a6b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 4px;
+}
+.btn-primary:hover { background: #2d5a9e; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: #64748b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 4px;
+}
+.btn-secondary:hover { background: #475569; }
+
+/* ===== الجداول ===== */
+.staff-table, .input-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+.staff-table th, .input-table th {
+  background: #1a3a6b;
+  color: white;
+  padding: 12px;
+  text-align: right;
+}
+.staff-table td, .input-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e6ed;
+}
+.input-table input, .input-table select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #e0e6ed;
+  border-radius: 6px;
+  font-size: 15px;
+}
+.input-table input:focus, .input-table select:focus {
+  border-color: #1a3a6b;
+  outline: none;
+}
+
+/* ===== وضع الإدخال ===== */
+.input-mode {
+  display: flex;
+  gap: 20px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.input-mode label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1a3a6b;
+}
+
+/* ===== step-section ===== */
+.step-section {
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-right: 4px solid #1a3a6b;
+}
+.step-section h3 {
+  color: #1a3a6b;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: none;
+  padding: 0;
+}
+
+/* ===== أزرار الإجراءات ===== */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e0e6ed;
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e6ed;
+}
+.modal-header h3 {
+  color: #1a3a6b;
+  font-size: 18px;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.modal-close {
+  background: #ef4444;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+.modal-close:hover { background: #dc2626; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid #e0e6ed;
+  flex-wrap: wrap;
+}
+
+/* ===== اختيار الموظفين ===== */
+.staff-select-btn {
+  background: #1a3a6b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px 0;
+}
+.staff-select-btn:hover { background: #2d5a9e; }
+
+.selected-staff-preview {
+  padding: 12px;
+  background: #f0f4f8;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #1a3a6b;
+}
+
+/* ===== تنسيقات النماذج ===== */
+.meeting-paper {
+  background: white;
+  padding: 30px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+}
+
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #1a3a6b;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.meeting-header-text h3 { color: #1a3a6b; font-size: 20px; margin-bottom: 4px; }
+.meeting-header-text h4 { color: #333; font-size: 15px; font-weight: normal; }
+.meeting-logo { width: 150px; height: auto; }
+
+.meeting-title {
+  text-align: center;
+  color: #1a3a6b;
+  font-size: 22px;
+  margin: 20px 0;
+  padding: 10px;
+  background: #f0f4f8;
+  border-radius: 6px;
+}
+
+.meeting-info-table, .meeting-recommendations, .meeting-signatures {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 2px solid #1a3a6b;
+}
+.meeting-info-table td, .meeting-recommendations td, .meeting-signatures td,
+.meeting-recommendations th, .meeting-signatures th {
+  padding: 10px 15px;
+  border: 1px solid #1a3a6b;
+}
+.meeting-info-table .label, .meeting-recommendations th, .meeting-signatures th {
+  background: #1a3a6b;
+  color: white;
+  font-weight: bold;
+}
+.meeting-section-title {
+  color: #1a3a6b;
+  font-size: 18px;
+  margin: 20px 0 10px;
+  padding-right: 10px;
+  border-right: 4px solid #1a3a6b;
+}
+.meeting-agenda { padding-right: 25px; margin-bottom: 20px; }
+.meeting-agenda li { padding: 6px 0; font-size: 15px; }
+
+.head-signature {
+  margin-top: 30px;
+  padding: 20px;
+  border: 2px solid #1a3a6b;
+  border-radius: 8px;
+  text-align: center;
+  background: #f8fafc;
+}
+.head-signature p { margin: 8px 0; font-size: 16px; color: #1a3a6b; }
+
+/* ===== الطباعة ===== */
+@media print {
+  body * { visibility: hidden; }
+  .meeting-paper, .meeting-paper * { visibility: visible; }
+  .meeting-paper {
+    position: static !important;
+    width: 100% !important;
+    padding: 10mm !important;
+    border: none !important;
+    font-size: 11px !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+  }
+  .meeting-paper:last-child { page-break-after: auto !important; }
+  .meeting-logo { width: 130px !important; }
+  .btn-primary, .btn-secondary, .tabs, .header, .modal-overlay, .staff-select-btn { display: none !important; }
+  .meeting-info-table td, .meeting-recommendations td, .meeting-signatures td { padding: 6px 8px !important; }
+  .meeting-section-title { font-size: 14px !important; margin: 12px 0 6px !important; }
+  .meeting-title { font-size: 16px !important; padding: 6px !important; margin: 10px 0 !important; }
+  .head-signature { padding: 10px !important; margin-top: 15px !important; page-break-inside: avoid !important; }
+  .head-signature p { font-size: 12px !important; margin: 4px 0 !important; }
+  @page { size: A4 landscape; margin: 8mm; }
+}y
