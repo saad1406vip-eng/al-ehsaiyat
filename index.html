@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق الإحصائيات - قسم المختبر</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-text">
+    <h1>📊 تطبيق الإحصائيات</h1>
+    <p>مستشفى سبت العلايا العام - قسم المختبر</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="home">🏠 الرئيسية</button>
+  <button class="tab" data-tab="aseer">📋 إحصائية عسير</button>
+  <button class="tab" data-tab="blood-bank">🩸 بنك الدم</button>
+  <button class="tab" data-tab="lab">🧪 إحصائية مخبرية</button>
+  <button class="tab" data-tab="training">🎓 التدريب</button>
+  <button class="tab" data-tab="meetings">📝 المحاضر</button>
+  <button class="tab" data-tab="staff">👥 الفريق</button>
+  <button class="tab" data-tab="settings">⚙️ الإعدادات</button>
+</nav>
+
+<main class="container">
+
+  <!-- الرئيسية -->
+  <section id="home" class="tab-content active">
+    <div class="card">
+      <h2>🏠 لوحة المعلومات</h2>
+      <div class="stats-grid">
+        <div class="stat-box"><span class="stat-number" id="stat-staff">18</span><span class="stat-label">موظف</span></div>
+        <div class="stat-box"><span class="stat-number">5</span><span class="stat-label">نماذج</span></div>
+        <div class="stat-box"><span class="stat-number" id="stat-meetings">0</span><span class="stat-label">محضر</span></div>
+        <div class="stat-box"><span class="stat-number" id="stat-training">0</span><span class="stat-label">تدريب</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- إحصائية عسير -->
+  <section id="aseer" class="tab-content">
+    <div class="card">
+      <h2>📋 إحصائية عسير الشهرية</h2>
+
+      <div class="step-section">
+        <h3>📤 1. رفع ملف عسير الرسمي</h3>
+        <input type="file" id="aseerFile" accept=".xlsx,.xls">
+        <div id="aseerFileResult"></div>
+      </div>
+
+      <div class="step-section">
+        <h3>📤 2. رفع ملف فيدا</h3>
+        <input type="file" id="vidaFileAseer" accept=".xlsx,.xls,.csv">
+        <div id="vidaFileAseerResult"></div>
+      </div>
+
+      <div class="step-section">
+        <h3>📅 3. الشهر والسنة</h3>
+        <select id="aseerMonth">
+          <option value="1">يناير</option><option value="2">فبراير</option>
+          <option value="3">مارس</option><option value="4">أبريل</option>
+          <option value="5">مايو</option><option value="6">يونيو</option>
+          <option value="7">يوليو</option><option value="8">أغسطس</option>
+          <option value="9" selected>سبتمبر</option><option value="10">أكتوبر</option>
+          <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+        </select>
+        <input type="number" id="aseerYear" value="2026" style="width:100px;">
+      </div>
+
+      <div class="step-section">
+        <h3>✍️ 4. الأقسام (قابلة للتعديل)</h3>
+        <table class="input-table" id="aseerDeptsTable">
+          <thead>
+            <tr><th>القسم</th><th>العدد</th></tr>
+          </thead>
+          <tbody id="aseerDeptsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateAseerModel()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="saveAseerExcel()" class="btn-secondary">💾 حفظ Excel</button>
+        <button onclick="printModel('aseer-result-paper')" class="btn-secondary">🖨️ طباعة A4</button>
+      </div>
+
+      <div id="aseer-result"></div>
+    </div>
+  </section>
+
+  <!-- بنك الدم -->
+  <section id="blood-bank" class="tab-content">
+    <div class="card">
+      <h2>🩸 إحصائية بنك الدم (GDN-15-1)</h2>
+
+      <div class="input-mode">
+        <label><input type="radio" name="bb-mode" value="manual" checked onchange="toggleBBMode()"> ✍️ إدخال يدوي</label>
+        <label><input type="radio" name="bb-mode" value="auto" onchange="toggleBBMode()"> 🤖 محاكاة تلقائية</label>
+      </div>
+
+      <div id="bb-manual" class="input-section">
+        <h3>المتبرعون</h3>
+        <table class="input-table">
+          <tr><td>إجمالي عدد المتبرعين</td><td><input type="number" id="bb-donors-total"></td></tr>
+          <tr><td>سعودي</td><td><input type="number" id="bb-donors-saudi"></td></tr>
+          <tr><td>غير سعودي</td><td><input type="number" id="bb-donors-nsaudi"></td></tr>
+          <tr><td>تبرع لأول مرة</td><td><input type="number" id="bb-first-time"></td></tr>
+          <tr><td>تبرع أكثر من مرة</td><td><input type="number" id="bb-more-than-one"></td></tr>
+        </table>
+
+        <h3>تفاصيل الفحوص والوحدات</h3>
+        <table class="input-table">
+          <tr><td>وحدات مجمعة في نفس البنك</td><td><input type="number" id="bb-collected-same"></td></tr>
+          <tr><td>وحدات مجمعة من بنوك أخرى</td><td><input type="number" id="bb-collected-other"></td></tr>
+          <tr><td>وحدات مرسلة لبنوك أخرى</td><td><input type="number" id="bb-sent-other"></td></tr>
+          <tr><td>إجمالي عدد الوحدات</td><td><input type="number" id="bb-total-units"></td></tr>
+        </table>
+
+        <h3>مشتقات الدم المحضرة</h3>
+        <table class="input-table">
+          <tr><td>Packed RBC</td><td><input type="number" id="bb-packed-rbc"></td></tr>
+          <tr><td>FFP</td><td><input type="number" id="bb-ffp"></td></tr>
+          <tr><td>Cryo.ppt</td><td><input type="number" id="bb-cryo"></td></tr>
+          <tr><td>PC</td><td><input type="number" id="bb-pc"></td></tr>
+        </table>
+
+        <h3>الوحدات المصروفة</h3>
+        <table class="input-table">
+          <tr><td>Whole Blood</td><td><input type="number" id="bb-whole"></td></tr>
+          <tr><td>Packed RBC</td><td><input type="number" id="bb-disp-packed"></td></tr>
+          <tr><td>Conc. Platelets</td><td><input type="number" id="bb-disp-platelets"></td></tr>
+          <tr><td>FFP</td><td><input type="number" id="bb-disp-ffp"></td></tr>
+          <tr><td>Cryoprecipitate</td><td><input type="number" id="bb-disp-cryo"></td></tr>
+          <tr><td>PRBCs Leukocyte Filtered</td><td><input type="number" id="bb-disp-prbc"></td></tr>
+          <tr><td>Platelets Conc. Leukocyte Filtered</td><td><input type="number" id="bb-disp-plt"></td></tr>
+          <tr><td>Irradiated PRBCs</td><td><input type="number" id="bb-disp-irr-prbc"></td></tr>
+          <tr><td>Irradiated Platelets</td><td><input type="number" id="bb-disp-irr-plt"></td></tr>
+          <tr><td>Others</td><td><input type="number" id="bb-disp-others"></td></tr>
+        </table>
+
+        <h3>الوحدات التالفة</h3>
+        <table class="input-table">
+          <tr><td>Whole Blood</td><td><input type="number" id="bb-taint-whole"></td></tr>
+          <tr><td>Packed RBC</td><td><input type="number" id="bb-taint-packed"></td></tr>
+          <tr><td>Conc. Platelets</td><td><input type="number" id="bb-taint-platelets"></td></tr>
+          <tr><td>FFP</td><td><input type="number" id="bb-taint-ffp"></td></tr>
+          <tr><td>Cryoprecipitate</td><td><input type="number" id="bb-taint-cryo"></td></tr>
+          <tr><td>PRBCs Leukocyte Filtered</td><td><input type="number" id="bb-taint-prbc"></td></tr>
+          <tr><td>Platelets Conc. Leukocyte Filtered</td><td><input type="number" id="bb-taint-plt"></td></tr>
+        </table>
+
+        <h3>فحوص الدم</h3>
+        <table class="input-table">
+          <tr><td>Cross Matching - Matched</td><td><input type="number" id="bb-cm-matched"></td></tr>
+          <tr><td>Cross Matching - Mismatched</td><td><input type="number" id="bb-cm-mismatched"></td></tr>
+          <tr><td>Blood Grouping & Rh Factor</td><td><input type="number" id="bb-bg"></td></tr>
+          <tr><td>Antibody Screening</td><td><input type="number" id="bb-as"></td></tr>
+          <tr><td>Antibody Identification</td><td><input type="number" id="bb-ai"></td></tr>
+          <tr><td>Hepatitis B</td><td><input type="number" id="bb-hbv"></td></tr>
+          <tr><td>Hepatitis C</td><td><input type="number" id="bb-hcv"></td></tr>
+          <tr><td>HIV</td><td><input type="number" id="bb-hiv"></td></tr>
+          <tr><td>HTLV</td><td><input type="number" id="bb-htlv"></td></tr>
+          <tr><td>CMV</td><td><input type="number" id="bb-cmv"></td></tr>
+          <tr><td>Other STD</td><td><input type="number" id="bb-std"></td></tr>
+          <tr><td>Malaria</td><td><input type="number" id="bb-malaria"></td></tr>
+        </table>
+      </div>
+
+      <div id="bb-auto" class="input-section" style="display:none;">
+        <p style="color:#64748b;">🤖 محاكاة تلقائية بناءً على الأشهر السابقة</p>
+        <button onclick="simulateBBData()" class="btn-primary">🔄 توليد محاكاة</button>
+        <div id="bb-simulation"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateBloodBank()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="saveBBExcel()" class="btn-secondary">💾 حفظ Excel</button>
+        <button onclick="printModel('bb-result-paper')" class="btn-secondary">🖨️ طباعة A4</button>
+      </div>
+
+      <div id="bb-result"></div>
+    </div>
+  </section>
+
+  <!-- إحصائية مخبرية -->
+  <section id="lab" class="tab-content">
+    <div class="card">
+      <h2>🧪 إحصائية الفحوص المخبرية الشهرية</h2>
+
+      <div class="step-section">
+        <h3>📤 1. رفع ملف فيدا</h3>
+        <input type="file" id="vidaFileLab" accept=".xlsx,.xls,.csv">
+        <div id="vidaFileLabResult"></div>
+      </div>
+
+      <div class="step-section">
+        <h3>📅 2. الشهر والسنة</h3>
+        <select id="labMonth">
+          <option value="1">يناير</option><option value="2">فبراير</option>
+          <option value="3">مارس</option><option value="4">أبريل</option>
+          <option value="5">مايو</option><option value="6">يونيو</option>
+          <option value="7">يوليو</option><option value="8">أغسطس</option>
+          <option value="9" selected>سبتمبر</option><option value="10">أكتوبر</option>
+          <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+        </select>
+        <input type="number" id="labYear" value="2026" style="width:100px;">
+      </div>
+
+      <div class="step-section">
+        <h3>✍️ 3. الأقسام (قابلة للتعديل)</h3>
+        <table class="input-table" id="labDeptsTable">
+          <thead>
+            <tr><th>القسم</th><th>ER</th><th>OPD</th><th>IP</th><th>الإجمالي</th></tr>
+          </thead>
+          <tbody id="labDeptsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateLabModel()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="saveLabExcel()" class="btn-secondary">💾 حفظ Excel</button>
+        <button onclick="printModel('lab-result-paper')" class="btn-secondary">🖨️ طباعة A4</button>
+      </div>
+
+      <div id="lab-result"></div>
+    </div>
+  </section>
+
+  <!-- التدريب -->
+  <section id="training" class="tab-content">
+    <div class="card">
+      <h2>🎓 التدريب الشهري (4 أسابيع)</h2>
+
+      <div class="step-section">
+        <h3>📅 الشهر والسنة</h3>
+        <select id="trainingMonth">
+          <option value="1">يناير</option><option value="2">فبراير</option>
+          <option value="3">مارس</option><option value="4">أبريل</option>
+          <option value="5">مايو</option><option value="6">يونيو</option>
+          <option value="7">يوليو</option><option value="8">أغسطس</option>
+          <option value="9" selected>سبتمبر</option><option value="10">أكتوبر</option>
+          <option value="11">نوفمبر</option><option value="12">ديسمبر</option>
+        </select>
+        <input type="number" id="trainingYear" value="2026" style="width:100px;">
+      </div>
+
+      <div class="step-section">
+        <h3>📚 اختيار الدورات (4 أسابيع)</h3>
+        <table class="input-table">
+          <thead>
+            <tr><th>الأسبوع</th><th>الدورة</th><th>الساعات</th><th>التاريخ</th></tr>
+          </thead>
+          <tbody id="trainingWeeksTable"></tbody>
+        </table>
+      </div>
+
+      <div class="step-section">
+        <h3>👥 اختيار الموظفين (اختياري)</h3>
+        <p style="color:#64748b;margin-bottom:10px;">اتركه فارغاً لاختيار كل الفريق تلقائياً</p>
+        <button onclick="openStaffModal()" class="staff-select-btn">👥 اختيار الموظفين</button>
+        <div id="selectedStaffPreview" class="selected-staff-preview">
+          لم يتم اختيار أي موظف — سيتم استخدام كل الفريق
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button onclick="generateTraining()" class="btn-primary">📊 توليد النموذج</button>
+        <button onclick="saveTrainingExcel()" class="btn-secondary">💾 حفظ Excel (5 أوراق)</button>
+        <button onclick="printModel('training-result-paper')" class="btn-secondary">🖨️ طباعة A4</button>
+      </div>
+
+      <div id="training-result"></div>
+    </div>
+  </section>
+
+  <!-- المحاضر -->
+  <section id="meetings" class="tab-content">
+    <div class="card">
+      <h2>📝 توليد محضر اجتماع</h2>
+      <button onclick="openMeetingStaffModal()" class="staff-select-btn">👥 اختيار الموظفين</button>
+      <div id="meetingStaffPreview" class="selected-staff-preview">لم يتم اختيار أي موظف — سيتم استخدام 8 موظفين تلقائياً</div>
+      <button onclick="generateMeeting()" class="btn-primary">🔄 توليد محضر جديد</button>
+      <div id="meetingResult"></div>
+    </div>
+  </section>
+
+  <!-- الفريق -->
+  <section id="staff" class="tab-content">
+    <div class="card">
+      <h2>👥 فريق العمل</h2>
+
+      <div class="step-section">
+        <h3>➕ إضافة موظف جديد</h3>
+        <table class="input-table">
+          <tr><td>الاسم</td><td><input type="text" id="new-staff-name"></td></tr>
+          <tr><td>الرقم الوظيفي</td><td><input type="text" id="new-staff-emp"></td></tr>
+          <tr><td>المسمى</td><td>
+            <select id="new-staff-role">
+              <option value="فني مختبر">فني مختبر</option>
+              <option value="أخصائي">أخصائي</option>
+              <option value="أخصائي أول">أخصائي أول</option>
+              <option value="طبيب أمراض دم">طبيب أمراض دم</option>
+              <option value="رئيس قسم المختبر">رئيس قسم المختبر</option>
+            </select>
+          </td></tr>
+        </table>
+        <button onclick="addStaff()" class="btn-primary">➕ إضافة</button>
+      </div>
+
+      <div class="step-section">
+        <h3>📋 قائمة الموظفين</h3>
+        <table class="staff-table">
+          <thead>
+            <tr><th>#</th><th>الاسم</th><th>الرقم الوظيفي</th><th>المسمى</th><th>إجراء</th></tr>
+          </thead>
+          <tbody id="staffTable"></tbody>
+        </table>
+        <button onclick="exportStaff()" class="btn-secondary">💾 تصدير Excel</button>
+        <button onclick="resetStaff()" class="btn-secondary">🔄 استعادة الافتراضي</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- الإعدادات -->
+  <section id="settings" class="tab-content">
+    <div class="card">
+      <h2>⚙️ الإعدادات</h2>
+
+      <div class="step-section">
+        <h3>📊 معاملات الموسمية (للمحاكاة)</h3>
+        <table class="input-table">
+          <tr><td>الصيف (يونيو - أغسطس)</td><td><input type="number" id="summer-factor" value="120"> %</td></tr>
+          <tr><td>الدراسة (سبتمبر - مايو)</td><td><input type="number" id="school-factor" value="100"> %</td></tr>
+          <tr><td>رمضان</td><td><input type="number" id="ramadan-factor" value="70"> %</td></tr>
+          <tr><td>عيد الفطر</td><td><input type="number" id="eid-fitr-factor" value="50"> %</td></tr>
+          <tr><td>عيد الأضحى</td><td><input type="number" id="eid-adha-factor" value="50"> %</td></tr>
+        </table>
+      </div>
+
+      <div class="step-section">
+        <h3>📊 نسب التوزيع</h3>
+        <table class="input-table">
+          <tr><td>نسبة السعوديين</td><td><input type="number" id="saudiRatio" value="90"> %</td></tr>
+          <tr><td>نسبة الطوارئ</td><td><input type="number" id="edRatio" value="40"> %</td></tr>
+          <tr><td>نسبة العيادات</td><td><input type="number" id="opdRatio" value="40"> %</td></tr>
+          <tr><td>نسبة التنويم</td><td><input type="number" id="inpRatio" value="20"> %</td></tr>
+        </table>
+      </div>
+
+      <button onclick="saveSettings()" class="btn-primary">💾 حفظ الإعدادات</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal اختيار الموظفين -->
+<div id="staffModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="staffModalTitle">👥 اختيار الموظفين</h3>
+      <button onclick="closeStaffModal()" class="modal-close">✕</button>
+    </div>
+    <div id="staffModalContent"></div>
+    <div class="modal-actions">
+      <button onclick="selectAllStaff()" class="btn-secondary">تحديد الكل</button>
+      <button onclick="deselectAllStaff()" class="btn-secondary">إلغاء الكل</button>
+      <button onclick="confirmStaffSelection()" class="btn-primary">✅ تم</button>
+    </div>
+  </div>
+</div>
+
+<script src="staff.js"></script>
+<script src="settings.js"></script>
+<script src="export.js"></script>
+<script src="models.js"></script>
+<script src="training.js"></script>
+<script src="meetings.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
